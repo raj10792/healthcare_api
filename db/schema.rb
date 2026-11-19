@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_103700) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_123127) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -56,6 +56,29 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_103700) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_doctor_profiles_on_user_id"
+  end
+
+  create_table "lab_orders", force: :cascade do |t|
+    t.bigint "patient_profile_id", null: false
+    t.bigint "doctor_profile_id", null: false
+    t.integer "status"
+    t.datetime "ordered_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_profile_id"], name: "index_lab_orders_on_doctor_profile_id"
+    t.index ["patient_profile_id"], name: "index_lab_orders_on_patient_profile_id"
+  end
+
+  create_table "lab_results", force: :cascade do |t|
+    t.bigint "lab_order_id", null: false
+    t.string "test_name"
+    t.string "result_value"
+    t.string "unit"
+    t.string "reference_range"
+    t.datetime "reported_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["lab_order_id"], name: "index_lab_results_on_lab_order_id"
   end
 
   create_table "medical_records", force: :cascade do |t|
@@ -123,6 +146,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_103700) do
   add_foreign_key "clinic_mamberships", "clinics"
   add_foreign_key "clinic_mamberships", "users"
   add_foreign_key "doctor_profiles", "users"
+  add_foreign_key "lab_orders", "doctor_profiles"
+  add_foreign_key "lab_orders", "patient_profiles"
+  add_foreign_key "lab_results", "lab_orders"
   add_foreign_key "medical_records", "doctor_profiles"
   add_foreign_key "medical_records", "patient_profiles"
   add_foreign_key "patient_profiles", "users"
