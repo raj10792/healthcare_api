@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_101421) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_103700) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -82,6 +82,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_101421) do
     t.index ["user_id"], name: "index_patient_profiles_on_user_id"
   end
 
+  create_table "prescription_items", force: :cascade do |t|
+    t.bigint "prescription_id", null: false
+    t.string "medicine_name"
+    t.string "dosage"
+    t.string "frequency"
+    t.string "duration"
+    t.text "instructions"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["prescription_id"], name: "index_prescription_items_on_prescription_id"
+  end
+
+  create_table "prescriptions", force: :cascade do |t|
+    t.bigint "patient_profile_id", null: false
+    t.bigint "doctor_profile_id", null: false
+    t.bigint "medical_record_id"
+    t.datetime "prescribed_at"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_profile_id"], name: "index_prescriptions_on_doctor_profile_id"
+    t.index ["medical_record_id"], name: "index_prescriptions_on_medical_record_id"
+    t.index ["patient_profile_id"], name: "index_prescriptions_on_patient_profile_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", null: false
@@ -101,4 +126,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_101421) do
   add_foreign_key "medical_records", "doctor_profiles"
   add_foreign_key "medical_records", "patient_profiles"
   add_foreign_key "patient_profiles", "users"
+  add_foreign_key "prescription_items", "prescriptions"
+  add_foreign_key "prescriptions", "doctor_profiles"
+  add_foreign_key "prescriptions", "medical_records"
+  add_foreign_key "prescriptions", "patient_profiles"
 end
