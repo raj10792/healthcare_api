@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_16_122142) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_19_101421) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -58,6 +58,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_122142) do
     t.index ["user_id"], name: "index_doctor_profiles_on_user_id"
   end
 
+  create_table "medical_records", force: :cascade do |t|
+    t.bigint "patient_profile_id", null: false
+    t.bigint "doctor_profile_id", null: false
+    t.text "diagnosis"
+    t.text "notes"
+    t.datetime "recorded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_profile_id"], name: "index_medical_records_on_doctor_profile_id"
+    t.index ["patient_profile_id"], name: "index_medical_records_on_patient_profile_id"
+  end
+
   create_table "patient_profiles", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.date "date_of_birth"
@@ -86,5 +98,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_16_122142) do
   add_foreign_key "clinic_mamberships", "clinics"
   add_foreign_key "clinic_mamberships", "users"
   add_foreign_key "doctor_profiles", "users"
+  add_foreign_key "medical_records", "doctor_profiles"
+  add_foreign_key "medical_records", "patient_profiles"
   add_foreign_key "patient_profiles", "users"
 end
