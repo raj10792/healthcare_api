@@ -7,6 +7,8 @@ class User < ApplicationRecord
 
     has_one :patient_profile, dependent: :destroy
     has_one :doctor_profile, dependent: :destroy
+
+    has_many :access_tokens, dependent: :destroy
     
     validates :name, presence: true
 
