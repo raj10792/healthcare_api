@@ -58,6 +58,4 @@ group :development, :test do
   gem "factory_bot_rails"
 end
 
-group :production do
-  gem "sidekiq"
-end
+gem 'sidekiq'
