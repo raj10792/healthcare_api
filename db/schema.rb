@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_19_132211) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_20_154959) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -37,6 +37,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_132211) do
     t.index ["doctor_profile_id", "appointment_date"], name: "index_active_appointments_on_doctor_and_time", unique: true, where: "(status = ANY (ARRAY[0, 1]))"
     t.index ["doctor_profile_id"], name: "index_appointments_on_doctor_profile_id"
     t.index ["patient_profile_id"], name: "index_appointments_on_patient_profile_id"
+  end
+
+  create_table "audit_logs", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "action"
+    t.string "auditable_type"
+    t.bigint "auditable_id"
+    t.string "ip_address"
+    t.jsonb "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
 
   create_table "clinic_mamberships", force: :cascade do |t|
@@ -154,6 +166,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_19_132211) do
   add_foreign_key "appointments", "clinics"
   add_foreign_key "appointments", "doctor_profiles"
   add_foreign_key "appointments", "patient_profiles"
+  add_foreign_key "audit_logs", "users"
   add_foreign_key "clinic_mamberships", "clinics"
   add_foreign_key "clinic_mamberships", "users"
   add_foreign_key "doctor_profiles", "users"
